@@ -8,6 +8,8 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -35,7 +37,7 @@ public class RazorPayPaymentController {
 
 
     @PostMapping("/callback")
-    public String handleCallBack(@RequestBody(required = false) String payload){
+    public ResponseEntity<String> handleCallBack(@RequestBody(required = false) String payload){
         try {
             // Parse the JSON payload
             JSONObject json = new JSONObject(payload);
@@ -48,10 +50,10 @@ public class RazorPayPaymentController {
                 // Process the payment ID (update database, send email, etc.)
                 System.out.println("Payment captured: " + paymentId);
             }
-            return "Callback processed successfully";
+            return new ResponseEntity<String>("Callback processed successfully", HttpStatus.OK) ;
         } catch (Exception e) {
             e.printStackTrace();
-            return "Callback failed";
+            return new ResponseEntity<String>("Callback fails", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
